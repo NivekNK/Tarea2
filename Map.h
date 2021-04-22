@@ -17,4 +17,12 @@ void * nextMap(Map * map);
 
 void setSortFunction(Map* map, int (*lower_than)(void* key1, void* key2));
 
+int is_equal_string(void * key1, void * key2);
+
+int lower_than_string(void * key1, void * key2);
+
+int is_equal_int(void * key1, void * key2);
+
+int lower_than_int(void * key1, void * key2);
+
 #endif /* MAP_h */
