@@ -1,6 +1,8 @@
 #include "Map.h"
 #include "list.h"
-#include "pokemon.h"
+#include <stdio.h>
 
-typedef struct pokemon pokemon;
-typedef struct pokedex pokedex;
+typedef struct Pokemon Pokemon;
+typedef struct Pokedex Pokedex;
+
+Map* crearPokedex(FILE* pokemonsFile);
