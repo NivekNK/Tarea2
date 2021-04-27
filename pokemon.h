@@ -3,6 +3,9 @@
 #include <stdio.h>
 
 typedef struct Pokemon Pokemon;
-typedef struct Pokedex Pokedex;
+typedef struct PokedexData PokedexData;
+typedef struct Almacenamiento Almacenamiento;
 
-Map* crearPokedex(FILE* pokemonsFile);
+void llenarAlmacenamientos(FILE* pokemonsFile, Map* pokedex, Almacenamiento* almac);
+
+Almacenamiento* crearAlmacenameintoVacio();

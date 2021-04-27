@@ -6,7 +6,8 @@
 #include <string.h>
 
 typedef struct Pokemon Pokemon;
-typedef struct Pokedex Pokedex;
+typedef struct PokedexData PokedexData;
+typedef struct Almacenamiento Almacenamiento;
 
 struct Pokemon
 {
@@ -15,10 +16,10 @@ struct Pokemon
     int pc;
     int ps;
     char* sexo;
-    Pokedex* pokedex;
+    PokedexData* pokedex;
 };
 
-struct Pokedex
+struct PokedexData
 {
     char* nombre;
     int existencia;
@@ -29,27 +30,18 @@ struct Pokedex
     char* region;
 };
 
-Pokemon* crearPokemon(char* linea)
+struct Almacenamiento
 {
-    Pokemon* pokemon = (Pokemon*)malloc(sizeof(Pokemon));
-    pokemon->id = 0;
-    pokemon->nombre = (char*)malloc(sizeof(char) * 20);
-    pokemon->pc = 0;
-    pokemon->ps = 0;
-    pokemon-> sexo = (char*)malloc(sizeof(char) * 10);
+    Map* ids;
+    Map* nombres;
+    Map* pcs;
+    Map* regiones;
+};
 
-    for (int i = 0; i < 10; i++)
-    {
-        if (i == 0)
-            pokemon->id = get_csv_field(linea, i);
-    }
-
-    return pokemon;
-}
-
-Pokedex* crearPokemonEnPokedex(char* linea)
+PokedexData* crearPokedexDataVacio()
 {
-    Pokedex* pokedex = (Pokedex*)malloc(sizeof(Pokedex));
+    PokedexData* pokedex = (PokedexData*)malloc(sizeof(PokedexData));
+
     pokedex->nombre = (char*)malloc(sizeof(char) * 20);
     pokedex->existencia = 0;
     pokedex->tipos = (char*)malloc(sizeof(char) * 30);
@@ -61,26 +53,102 @@ Pokedex* crearPokemonEnPokedex(char* linea)
     return pokedex;
 }
 
-void llenarPokedex(FILE* pokemonsFile, Map* pokedex)
+void crearPokemonEnPokedex(PokedexData* pokedex, char* aux, int i)
+{
+    if (i == 1) pokedex->nombre = aux;
+    if (i == 2) pokedex->tipos = aux;
+    if (i == 6) pokedex->prev = aux;
+    if (i == 7) pokedex->pos = aux;
+    if (i == 8) pokedex->numeroPokedex = atoi(aux);
+    if (i == 9) pokedex->region = aux;
+}
+
+Pokemon* crearPokemon(char* linea)
+{
+    Pokemon* pokemon = (Pokemon*)malloc(sizeof(Pokemon));
+    PokedexData* pokedex = crearPokedexDataVacio();
+    pokemon->id = 0;
+    pokemon->nombre = (char*)malloc(sizeof(char) * 20);
+    pokemon->pc = 0;
+    pokemon->ps = 0;
+    pokemon-> sexo = (char*)malloc(sizeof(char) * 10);
+
+    for (int i = 0; i < 10; i++)
+    {
+        char* value = (char*)malloc(sizeof(char));
+        value = (char*)get_csv_field(linea, i);
+
+        if (i == 0) pokemon->id = atoi(value);
+        if (i == 1)
+        {
+            pokemon->nombre = value;
+            crearPokemonEnPokedex(pokedex, value, i);
+        }
+        if (i == 2) crearPokemonEnPokedex(pokedex, value, i);
+        if (i == 3) pokemon->pc = atoi(value);
+        if (i == 4) pokemon->ps = atoi(value);
+        if (i == 5) pokemon->sexo = value;
+        if (i > 5) crearPokemonEnPokedex(pokedex, value, i);
+    }
+
+    pokedex->existencia = 1;
+    pokemon->pokedex = pokedex;
+
+    return pokemon;
+}
+
+Almacenamiento* crearAlmacenameintoVacio()
+{
+    Almacenamiento* almac = (Almacenamiento*)malloc(sizeof(Almacenamiento));
+
+    almac->ids = createMap(is_equal_int);
+    setSortFunction(almac->ids, lower_than_int);
+
+    almac->nombres = createMap(is_equal_string);
+
+    almac->pcs = createMap(is_equal_int);
+    setSortFunction(almac->pcs, lower_than_int);
+
+    almac->regiones = createMap(is_equal_string);
+
+    return almac;
+}
+
+void insertListToMap(Map* map, void* key, void* value)
+{
+    List* list = searchMap(map, key);
+    if (list == NULL)
+    {
+        free(list);
+        list = createList();
+    }
+    else
+    {
+        eraseMap(map, key);
+    }
+    pushBack(list, value);
+
+    insertMap(map, key, list);
+}
+
+void llenarAlmacenamientos(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac)
 {
     char linea[1024];
     char *aux = (char*)malloc(sizeof(char));
-    int lineas = 0;
+    int cont = 0;
     while (fgets(linea, 1023, pokemonsFile) != NULL)
     {
-        if (lineas != 0)
+        if (cont != 0)
         {
-            
+            Pokemon* pokemon = crearPokemon(linea);
+
+            insertMap(pokedexMap, pokemon->nombre, pokemon->pokedex);
+
+            insertMap(almac->ids, &pokemon->id, pokemon);
+            insertMap(almac->nombres, pokemon->nombre, pokemon);
+            insertListToMap(almac->pcs, &pokemon->pc, pokemon);
+            insertListToMap(almac->regiones, pokemon->pokedex->region, pokemon);
         }
-        lineas++;
+        cont++;
     }
-}
-
-Map* crearPokedex(FILE* pokemonsFile)
-{
-    Map *pokedex = createMap(is_equal_string);
-
-    llenarPokedex(pokemonsFile, pokedex);
-
-    return pokedex;
 }
