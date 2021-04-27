@@ -63,7 +63,7 @@ void crearPokemonEnPokedex(PokedexData* pokedex, char* aux, int i)
     if (i == 9) pokedex->region = aux;
 }
 
-Pokemon* crearPokemon(char* linea)
+Pokemon* crearPokemon(char* linea, Map* map)
 {
     Pokemon* pokemon = (Pokemon*)malloc(sizeof(Pokemon));
     PokedexData* pokedex = crearPokedexDataVacio();
@@ -90,10 +90,17 @@ Pokemon* crearPokemon(char* linea)
         if (i == 5) pokemon->sexo = value;
         if (i > 5) crearPokemonEnPokedex(pokedex, value, i);
     }
-
-    pokedex->existencia = 1;
+       
+    if (pokemon == searchMap(map, pokemon->nombre))
+    {
+        pokedex->existencia++;
+    }
+    else
+    {
+        pokedex->existencia = 1;
+    }
+    
     pokemon->pokedex = pokedex;
-
     return pokemon;
 }
 
@@ -114,6 +121,17 @@ Almacenamiento* crearAlmacenameintoVacio()
     return almac;
 }
 
+void insertNoCopy(Map* pokedex, Pokemon* pokemon)
+{
+    Pokemon* poke = searchMap(pokedex, pokemon->nombre);
+    if (poke != NULL)
+    {
+        eraseMap(pokedex, pokemon->nombre);
+    }
+    
+    insertMap(pokedex, pokemon->nombre, pokemon->pokedex);
+}
+
 void insertListToMap(Map* map, void* key, void* value)
 {
     List* list = searchMap(map, key);
@@ -131,18 +149,28 @@ void insertListToMap(Map* map, void* key, void* value)
     insertMap(map, key, list);
 }
 
-void llenarAlmacenamientos(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac)
+/*int returnCurrentId()
 {
-    char linea[1024];
+
+}
+
+void setCurrentId(int id)
+{
+    
+}
+*/
+
+void llenarAlmacenamientos(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac,char* linea)
+{
     char *aux = (char*)malloc(sizeof(char));
     int cont = 0;
     while (fgets(linea, 1023, pokemonsFile) != NULL)
-    {
+    { 
         if (cont != 0)
         {
-            Pokemon* pokemon = crearPokemon(linea);
+            Pokemon* pokemon = crearPokemon(linea, pokedexMap);
 
-            insertMap(pokedexMap, pokemon->nombre, pokemon->pokedex);
+            insertNoCopy(pokedexMap, pokemon);
 
             insertMap(almac->ids, &pokemon->id, pokemon);
             insertMap(almac->nombres, pokemon->nombre, pokemon);
@@ -151,4 +179,63 @@ void llenarAlmacenamientos(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* 
         }
         cont++;
     }
+}
+
+void pokemonAtrapado(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac)
+{
+  char* nuevaLinea = (char *) malloc(sizeof(char) * 80);
+  char* nombre = (char*)malloc(sizeof(char) * 20);
+  char* tipos = (char*)malloc(sizeof(char)*20);
+  char* PC = (char*)malloc(sizeof(char)*20);;
+  char* PS=(char*)malloc(sizeof(char)*20);;
+  char* numeroPokedex = (char*)malloc(sizeof(char)*20);;
+  char* sexo = (char*)malloc(sizeof(char) * 20);
+  char* evolucionPrevia = (char*)malloc(sizeof(char) * 20);
+  char* evolucionPosterior = (char*)malloc(sizeof(char) * 20);
+  char* region =(char*)malloc(sizeof(char) * 20); 
+  printf("Ingrese nombre del pokemon atrapado");
+  scanf("%s", nombre);
+  strcpy(nuevaLinea, nombre);
+  strcat(nuevaLinea, ",");
+  printf("Ingrese tipos del pokemon atrapado");
+  scanf("%s", tipos);
+  strcpy(nuevaLinea, tipos);
+  strcat(nombre, ",");
+  printf("Ingrese los PC del pokemon atrapado");
+  scanf("%s", PC);
+  strcpy(nuevaLinea, PC);
+  strcat(nuevaLinea, ",");
+  printf("Ingrese los PS del pokemon atrapado");
+  scanf("%s", PS);
+  strcpy(nuevaLinea, PS);
+  strcat(nuevaLinea, ",");
+  printf("Ingrese el sexo del pokemon atrapado");
+  scanf("%s", sexo);
+  strcpy(nuevaLinea, sexo);
+  strcat(nuevaLinea, ",");
+  printf("Ingrese la evolucion previa del pokemon atrapado");
+  scanf("%s", evolucionPrevia);
+  strcpy(nuevaLinea, evolucionPrevia);
+  strcat(nuevaLinea, ",");
+    printf("Ingrese la evolucion posterior del pokemon atrapado");
+  scanf("%s", evolucionPosterior);
+  strcpy(nuevaLinea, evolucionPosterior);
+  strcat(nuevaLinea, ",");
+  printf("Ingrese  numero de pokedex del pokemon atrapado");
+  scanf("%s", numeroPokedex);
+  strcpy(nuevaLinea, numeroPokedex);
+  strcat(nuevaLinea, ",");
+  printf("Ingrese la Region del pokemon atrapado");
+  scanf("%s", region);
+  strcpy(nuevaLinea, region);
+  strcat(nuevaLinea, ",");  
+  llenarAlmacenamientos(pokemonsFile,pokedexMap,almac, nuevaLinea);
+}
+
+void mostrarPokemons(Map* pokedexMap)
+{
+PokedexData* aux = 
+  while (  ){
+    aux = nextMap(pokedexMap);
+  }
 }
