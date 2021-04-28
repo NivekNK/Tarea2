@@ -68,6 +68,16 @@ void * firstMap(Map * list) {
     return (void *)list->current->data;
 }
 
+void * tailMap(Map * list) {
+    assert(list != NULL); // list no puede ser NULL.
+
+    if (list->tail == NULL) return NULL;
+
+    list->current = list->tail;
+
+    return (void *)list->current->data;
+}
+
 void * nextMap(Map * list) {
     assert(list != NULL); // list no puede ser NULL.
 

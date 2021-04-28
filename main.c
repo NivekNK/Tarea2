@@ -7,8 +7,8 @@
 #include <string.h>
 
 void printOpciones();
-void opciones(int);
-
+void opciones(int, FILE*, Map*, Almacenamiento*);
+void subir_archivo();
 
 int main()
 {
@@ -26,8 +26,8 @@ int main()
     Map* pokedex = createMap(is_equal_string);
     // Struct de almacenamiento, aqui estan los mapas necesarios para tu almacenamiento pokemon
     Almacenamiento *almac = crearAlmacenameintoVacio();
-    llenarAlmacenamientos(newFile, pokedex, almac, linea);
-
+    llenarAlmacenamientos(newFile, pokedex, almac);
+  
     int solicitud = 100;
     while ( solicitud != 0 ) {
       printf("Selecione una opcion\n");
@@ -40,9 +40,9 @@ int main()
         scanf("%d", &solicitud);
     }
       //operaciones
-      opciones(solicitud);
+      opciones(solicitud, newFile,pokedex, almac);
     }
-pokemonAtrapado(newFile,pokedex,almac);
+
       
      
      
@@ -62,14 +62,15 @@ void printOpciones ()
   printf("0-. Salir\n");
 }
 
-void opciones(int solicitud )
+void opciones(int solicitud,FILE* newFile, Map* pokedex, Almacenamiento* almac)
 {
   switch (solicitud)
   {
     case 1:
+    //subir_archivo();
     break;
     case 2:
-
+      pokemonAtrapado(pokedex,almac);
     break;
     default:
     break;

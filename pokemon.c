@@ -4,6 +4,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#define QUOTE "\""
+
+/* 
+listas
+lista pcs
+lista nombres
+lista tipos
+lista region
+*/
 
 typedef struct Pokemon Pokemon;
 typedef struct PokedexData PokedexData;
@@ -36,6 +45,7 @@ struct Almacenamiento
     Map* nombres;
     Map* pcs;
     Map* regiones;
+    Map* tipos;
 };
 
 PokedexData* crearPokedexDataVacio()
@@ -106,25 +116,24 @@ Pokemon* crearPokemon(char* linea, Map* map)
 
 Almacenamiento* crearAlmacenameintoVacio()
 {
-    Almacenamiento* almac = (Almacenamiento*)malloc(sizeof(Almacenamiento));
+  Almacenamiento* almac = (Almacenamiento*)malloc(sizeof(Almacenamiento));
 
-    almac->ids = createMap(is_equal_int);
-    setSortFunction(almac->ids, lower_than_int);
+  almac->ids = createMap(is_equal_int);
+  setSortFunction(almac->ids, lower_than_int);
 
-    almac->nombres = createMap(is_equal_string);
+  almac->nombres = createMap(is_equal_string);
 
-    almac->pcs = createMap(is_equal_int);
-    setSortFunction(almac->pcs, lower_than_int);
+  almac->pcs = createMap(is_equal_int);
+  setSortFunction(almac->pcs, lower_than_int);
 
-    almac->regiones = createMap(is_equal_string);
-
-    return almac;
+  almac->regiones = createMap(is_equal_string);
+  almac->tipos = createMap(is_equal_string);
+  return almac;
 }
 
 void insertNoCopy(Map* pokedex, Pokemon* pokemon)
 {
-    Pokemon* poke = searchMap(pokedex, pokemon->nombre);
-    if (poke != NULL)
+    if ( searchMap(pokedex, pokemon->nombre) != NULL )
     {
         eraseMap(pokedex, pokemon->nombre);
     }
@@ -137,102 +146,198 @@ void insertListToMap(Map* map, void* key, void* value)
     List* list = searchMap(map, key);
     if (list == NULL)
     {
-        free(list);
-        list = createList();
+      free(list);
+      list = createList();  
     }
     else
     {
-        eraseMap(map, key);
+      eraseMap(map, key);
     }
     pushBack(list, value);
 
     insertMap(map, key, list);
 }
 
-/*int returnCurrentId()
+void insertarAMapas(Map* pokedexMap, Almacenamiento* almac,char* linea)
 {
-
+  Pokemon* pokemon = crearPokemon(linea, pokedexMap);
+  insertNoCopy(pokedexMap, pokemon);
+  insertMap(almac->ids, &pokemon->id, pokemon);
+  insertListToMap(almac->nombres, pokemon->nombre, pokemon);
+  insertListToMap(almac->pcs, &pokemon->pc, pokemon);
+  insertListToMap(almac->regiones,pokemon->pokedex->region, pokemon);
+  insertListToMap(almac->tipos, pokemon->pokedex->tipos,pokemon);
 }
 
-void setCurrentId(int id)
+void llenarAlmacenamientos(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac)
 {
-    
-}
-*/
-
-void llenarAlmacenamientos(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac,char* linea)
-{
-    char *aux = (char*)malloc(sizeof(char));
-    int cont = 0;
-    while (fgets(linea, 1023, pokemonsFile) != NULL)
-    { 
-        if (cont != 0)
-        {
-            Pokemon* pokemon = crearPokemon(linea, pokedexMap);
-
-            insertNoCopy(pokedexMap, pokemon);
-
-            insertMap(almac->ids, &pokemon->id, pokemon);
-            insertMap(almac->nombres, pokemon->nombre, pokemon);
-            insertListToMap(almac->pcs, &pokemon->pc, pokemon);
-            insertListToMap(almac->regiones, pokemon->pokedex->region, pokemon);
-        }
-        cont++;
+  char linea[1024];
+  char *aux = (char*)malloc(sizeof(char));
+  int cont = 0;
+  while (fgets(linea, 1023, pokemonsFile) != NULL)
+  { 
+    if (cont != 0)
+    {
+      insertarAMapas(pokedexMap,almac,linea);
     }
+    cont++;
+  }
+
 }
 
-void pokemonAtrapado(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac)
+void borrarDeLista(Map* map, void* key, List* list, int id)
+{
+  Pokemon* poke = firstList(list);
+  while ( poke != NULL) 
+  {
+    if (poke->id == id)
+    {
+      popCurrent(list);
+      break;
+    }
+    poke = nextList(list);
+  }
+
+  insertListToMap(map, key, list);
+}
+
+/* 
+listas
+lista nombres
+lista pcs
+lista tipos
+lista region
+*/
+void liberarPokemon(int id,Map* pokedex,Almacenamiento* almac)
+{
+  Pokemon* poke = (Pokemon*) searchMap(pokedex,&id);
+  if ( poke != NULL ) {
+    eraseMap(almac->ids,&id);
+    borrarDeLista(almac->nombres, poke->nombre, (List*)searchMap(almac->nombres, poke->nombre), id);
+    borrarDeLista(almac->pcs, &poke->pc, (List*)searchMap(almac->pcs, &poke->pc), id);
+    //borrarDeLista((List*)searchMap(almac->tipos, poke->tipos), id);
+    borrarDeLista(almac->regiones, poke->pokedex->region, (List*)searchMap(almac->regiones, poke->pokedex->region), id);
+  }
+}
+
+void scanLiberarPokemon(Map* pokedex, Almacenamiento *almac)
+{
+  int id;
+  scanf("ingrese el id del pokemon a eliminar %i", &id);
+  liberarPokemon(id, pokedex, almac);
+}
+
+void retornaPrint(int i)
+{
+  if ( i == 0 ) printf("Ingrese nombre del pokemon atrapado: ");
+  if ( i == 1 ) printf("Ingrese cantidad de tipos del pokemon atrapado: ");
+  if ( i == 2 ) printf("Ingrese los PC del pokemon atrapado: "); 
+  if ( i == 3 ) printf("Ingrese los PS del pokemon atrapado: "); 
+  if ( i == 4 ) printf("Ingrese el sexo del pokemon atrapado: "); 
+  if ( i == 5 ) printf("Ingrese la evolucion previa del pokemon atrapado: "); 
+  if ( i == 6 ) printf("Ingrese la evolucion posterior del pokemon atrapado: "); 
+  if ( i == 7 ) printf("Ingrese numero de pokedex del pokemon atrapado: "); 
+  if ( i == 8 ) printf("Ingrese la Region del pokemon atrapado: "); 
+}
+
+char* retornaRespuesta(int i)
+{
+  char* res = (char*)malloc(sizeof(char) * 20);
+  retornaPrint(i);
+  if ( i == 1 ) 
+  {
+    char* lineaTipos = (char*) malloc(sizeof(char) * 20);
+    scanf("%s", res);
+    strcat(lineaTipos, QUOTE);
+    for (int j = atoi(res) ; j > 0 ; j-- )
+    {
+      printf("Ingrese tipo: ");
+      scanf("%s", res);
+      strcat(lineaTipos, res);
+      if ( j == 1 ) break;
+      strcat(lineaTipos, ", ");
+    }
+    strcat(lineaTipos, QUOTE);
+    return lineaTipos;
+  }
+  else
+  {
+    scanf("%s", res);
+  }
+  return res;
+}
+
+char* crearLinea(Almacenamiento* almac)
 {
   char* nuevaLinea = (char *) malloc(sizeof(char) * 80);
-  char* nombre = (char*)malloc(sizeof(char) * 20);
-  char* tipos = (char*)malloc(sizeof(char)*20);
-  char* PC = (char*)malloc(sizeof(char)*20);;
-  char* PS=(char*)malloc(sizeof(char)*20);;
-  char* numeroPokedex = (char*)malloc(sizeof(char)*20);;
-  char* sexo = (char*)malloc(sizeof(char) * 20);
-  char* evolucionPrevia = (char*)malloc(sizeof(char) * 20);
-  char* evolucionPosterior = (char*)malloc(sizeof(char) * 20);
-  char* region =(char*)malloc(sizeof(char) * 20); 
-  printf("Ingrese nombre del pokemon atrapado");
-  scanf("%s", nombre);
-  strcpy(nuevaLinea, nombre);
+  char* respuesta;
+
+  Pokemon* aux = (Pokemon*)tailMap(almac->ids);
+  char* ultimoId = (char*)malloc(sizeof(char) * 20);
+  sprintf(ultimoId, "%d", aux->id + 1);
+  strcat(nuevaLinea, ultimoId);
   strcat(nuevaLinea, ",");
-  printf("Ingrese tipos del pokemon atrapado");
-  scanf("%s", tipos);
-  strcpy(nuevaLinea, tipos);
-  strcat(nombre, ",");
-  printf("Ingrese los PC del pokemon atrapado");
-  scanf("%s", PC);
-  strcpy(nuevaLinea, PC);
-  strcat(nuevaLinea, ",");
-  printf("Ingrese los PS del pokemon atrapado");
-  scanf("%s", PS);
-  strcpy(nuevaLinea, PS);
-  strcat(nuevaLinea, ",");
-  printf("Ingrese el sexo del pokemon atrapado");
-  scanf("%s", sexo);
-  strcpy(nuevaLinea, sexo);
-  strcat(nuevaLinea, ",");
-  printf("Ingrese la evolucion previa del pokemon atrapado");
-  scanf("%s", evolucionPrevia);
-  strcpy(nuevaLinea, evolucionPrevia);
-  strcat(nuevaLinea, ",");
-    printf("Ingrese la evolucion posterior del pokemon atrapado");
-  scanf("%s", evolucionPosterior);
-  strcpy(nuevaLinea, evolucionPosterior);
-  strcat(nuevaLinea, ",");
-  printf("Ingrese  numero de pokedex del pokemon atrapado");
-  scanf("%s", numeroPokedex);
-  strcpy(nuevaLinea, numeroPokedex);
-  strcat(nuevaLinea, ",");
-  printf("Ingrese la Region del pokemon atrapado");
-  scanf("%s", region);
-  strcpy(nuevaLinea, region);
-  strcat(nuevaLinea, ",");  
-  llenarAlmacenamientos(pokemonsFile,pokedexMap,almac, nuevaLinea);
+
+  for (int i = 0 ; i < 9 ; i++)
+  {
+    respuesta = retornaRespuesta(i);
+    strcat(nuevaLinea, respuesta);
+    strcat(nuevaLinea, ",");
+  }
+
+  return nuevaLinea;
 }
 
-/*void mostrarPokemons(Map* pokedexMap)
+void pokemonAtrapado(Map* pokedexMap, Almacenamiento* almac)
+{
+  char* nuevaLinea = crearLinea(almac);
+  //printf("%s\n", nuevaLinea);
+  insertarAMapas(pokedexMap,almac,nuevaLinea);
+}
+
+void evolucionPokemon(Map* pokedexMap, Almacenamiento* almac)
+{
+  char* id = (char*) malloc(sizeof(char));
+  scanf("%s", id);
+  Pokemon* pokemon = searchMap(almac->ids,id);
+  if ( pokemon != NULL) 
+  {
+    PokedexData* pokedex = pokemon->pokedex;
+    if (pokedex->pos != NULL) //comparar si esta en su maxima evolucion
+    {
+      
+    }
+    else printf("EL pokemon se encuentra en su maxima evolucion");
+  } 
+  else printf("El id ingresado no existe\n");
+
+}
+/*
+ Pokemon* pokemon = searchMap(almac->ids,id);
+ if ( pokemon != NULL)
+ {
+   PokedexData* pokedex = pokemon->pokedex;
+   if (pokedex->pos != NULL) //comparar si esta en su maxima evolucion
+   {
+     liberarPokemon(pokemon);
+     char* linea = crearLinea(pokemon); // crea un línea con todos los datos necesarios de un pokemon y aumenta los PC y PS
+     pokemon = crearPokemon(linea); //Función que crea pokemons
+     insertarAMapas(pokedex, almac, pokemon);
+   }
+   else printf("EL pokemon se encuentra en su maxima evolucion");
+ }
+ else printf("El id ingresado no existe\n");
+*/
+
+void mostrarPokemons(Map* pokedexMap) // de la pokedex
 {
 
-}*/
+  /*Pokemon* aux = firstMap(pokedexMap);
+
+  while ( aux != NULL ) {
+    printf("");
+    nextMap(pokedexMap);
+  }
+  */
+}
+

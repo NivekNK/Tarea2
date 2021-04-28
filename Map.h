@@ -13,6 +13,8 @@ void * searchMap(Map * map, void * key);
 
 void * firstMap(Map * map);
 
+void * tailMap(Map * list);
+
 void * nextMap(Map * map);
 
 void setSortFunction(Map* map, int (*lower_than)(void* key1, void* key2));
