@@ -232,10 +232,7 @@ void pokemonAtrapado(FILE* pokemonsFile, Map* pokedexMap, Almacenamiento* almac)
   llenarAlmacenamientos(pokemonsFile,pokedexMap,almac, nuevaLinea);
 }
 
-void mostrarPokemons(Map* pokedexMap)
+/*void mostrarPokemons(Map* pokedexMap)
 {
-PokedexData* aux = 
-  while (  ){
-    aux = nextMap(pokedexMap);
-  }
-}
+
+}*/

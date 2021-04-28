@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <string.h>
 
+void printOpciones();
+void opciones(int);
+
+
 int main()
 {
     FILE* newFile = NULL;
@@ -23,8 +27,51 @@ int main()
     // Struct de almacenamiento, aqui estan los mapas necesarios para tu almacenamiento pokemon
     Almacenamiento *almac = crearAlmacenameintoVacio();
     llenarAlmacenamientos(newFile, pokedex, almac, linea);
-    // ACA DEBERIA EL SWITCH SI TUVIERAMOS SWITCH :(
-     pokemonAtrapado(newFile,pokedex,almac);
+
+    int solicitud = 100;
+    while ( solicitud != 0 ) {
+      printf("Selecione una opcion\n");
+      printOpciones();
+      scanf("%d", &solicitud);
+    while(solicitud < 0 || solicitud > 10 ) 
+    {
+        printf("Selecione una opcion correcta\n");
+        printOpciones();
+        scanf("%d", &solicitud);
+    }
+      //operaciones
+      opciones(solicitud);
+    }
+pokemonAtrapado(newFile,pokedex,almac);
+      
+     
      
     return 0;
+}
+void printOpciones ()
+{
+  printf("1-. Subir archivo\n");
+  printf("2-. Atrapar Pokemon\n");
+  printf("3-. Evolucionar pokemon\n");
+  printf("4-. Buscar pokemons por tipo\n");
+  printf("5-. Mostrar existencia de mi pokemon por su nombre\n");
+  printf("6-. \n");
+  printf("7-. Mostrar todos los pokemons de la pokedex\n");
+  printf("8.- Mostrar mis pokemon por PC(se encunetran ordenados\n");
+  printf("9-. Liberar pokemon\n");
+  printf("0-. Salir\n");
+}
+
+void opciones(int solicitud )
+{
+  switch (solicitud)
+  {
+    case 1:
+    break;
+    case 2:
+
+    break;
+    default:
+    break;
+  }
 }
