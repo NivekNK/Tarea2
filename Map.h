@@ -27,4 +27,6 @@ int is_equal_int(void * key1, void * key2);
 
 int lower_than_int(void * key1, void * key2);
 
+int upper_than_int(void * key1, void * key2);
+
 #endif /* MAP_h */

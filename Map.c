@@ -276,3 +276,8 @@ int lower_than_int(void * key1, void * key2) {
     if(*(int*)key1 < *(int*)key2) return 1;
     return 0;
 }
+
+int upper_than_int(void * key1, void * key2) {
+    if(*(int*)key1 > *(int*)key2) return 1;
+    return 0;
+}

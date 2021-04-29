@@ -93,4 +93,4 @@ id,nombre,tipos,pc,ps,sexo,evolucion previa,evolucion posterior,numero pokedex,r
 92,Sableye ,"Fantasma, Siniestro",1461,119,Hembra,No tiene,No tiene,302,Hoenn
 93,Jolteon,Electrico,2888,140,Macho,Eevee,No tiene,135,Kanto
 94,Chikorita,Planta,0,1,Hembra,No tiene,Baylef,101,Johto
-95,Torterra,"Planta, Tierra",2062,151,Macho,Grotle,No tiene,389,Sinnoh
+95,Torterra,"Planta, Tierra",2062,151,Macho,Grotle,No tiene,389,Sinnoh 

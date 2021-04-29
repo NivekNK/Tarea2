@@ -27,4 +27,6 @@ void * popCurrent(List * list);
 
 void cleanList(List * list);
 
+int listSize(List *list);
+
 #endif /* List_h */
