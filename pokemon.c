@@ -410,14 +410,18 @@ void mostrarxPC (Almacenamiento* almac)
 {
   List* listPc = (List*) firstMap(almac->pcs);
   if ( listPc == NULL ) return;
-  Pokemon* poke = (Pokemon*) firstList(listPc);
   printf("PC,NOMBRE\n");
   while ( listPc != NULL ) 
   {
-    printf("%d,", poke->pc);
-    printf("%s", poke->nombre);
+    Pokemon* poke = (Pokemon*) firstList(listPc);
+    while (poke != NULL)
+    {
+      printf("%d,", poke->pc);
+      printf("%s", poke->nombre);
+      poke = (Pokemon*)nextList(listPc);
+      if (poke != NULL) printf("\n");
+    }
     listPc = (List*) nextMap(almac->pcs);
-    poke = firstList(listPc);
     printf("\n");
   }
   printf("----------------------------------------------\n");
