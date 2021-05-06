@@ -29,4 +29,6 @@ int lower_than_int(void * key1, void * key2);
 
 int upper_than_int(void * key1, void * key2);
 
+int sizeMapa(Map* map);
+
 #endif /* MAP_h */

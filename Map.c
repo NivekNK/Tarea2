@@ -281,3 +281,19 @@ int upper_than_int(void * key1, void * key2) {
     if(*(int*)key1 > *(int*)key2) return 1;
     return 0;
 }
+
+int sizeMapa(Map* map)
+{
+  int i = 1;
+  void* data = firstMap(map);
+  if (data != NULL)
+  {
+    while (nextMap(map) != NULL)
+    {
+      i++;
+    }
+  }
+  else i = 0;
+  
+  return i + 1;
+}

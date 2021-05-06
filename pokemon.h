@@ -23,6 +23,11 @@ void buscarNombreEnPokedex(Pokedex* pokedex);
 
 void buscarNombreEnAlmacenamiento(Almacenamiento* almac);
 
+void buscarPorTipo(Almacenamiento* almac);
+
+void evolucionPokemon(Pokedex* pokedex, Almacenamiento* almac);
+
 Almacenamiento* crearAlmacenameintoVacio();
+
 
 Pokedex* crearPokedexVacio();

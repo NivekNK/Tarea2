@@ -1,54 +1,30 @@
-# Tarea2
+1)Alex Otto Vicecio
+  Aspectos a mejorar:
+1.Contribuir mas a las soluciones.
+2.Conectarse mas seguido.
+  Aspectos Positivos:
+1.Ayudar a buscar soluciones
+2.Investigar cosas muy especificas
 
-void agregarBombero(List *bomberos, Dias *dias) 
-{
-  char* nuevaLinea = (char*) malloc(sizeof(char) * 65); 
-  char* nombre = (char*) malloc(sizeof(char) * 20);
-  char* apellido = (char*) malloc(sizeof(char) * 20);
-  char* rut = (char*) malloc(sizeof(char)* 11);
-  char* respuesta = (char*) malloc(sizeof(char) * 3);
+2)Javier Fariña Andaur
+1.- Ser mas puntual con los horarios.
+2.- Mejorar la legelibidad del codigo.  Aspectos por mejorar:
+  Aspectos positivos:
+1.- Contribuir a la toma de decisiones.
+2.- Solicitar ayuda a l@s ayudantes.
 
-  printf("Ingrese rut:");
-  scanf("%s", rut);
-  strcpy(nuevaLinea, rut);
-  strcat(nuevaLinea, ",");
+3)Kevin Rojas Villalobos
+  Aspectos a mejorar:
+1.- Ser perfeccionista respecto al codigo.
+2.- Dejar de intentar hacer todo por su cuenta.
+  Aspectos Positivos:
+1.- Buena explicando codigo.
+2.- Empeño en buscar soluciones a los problemas encontrados.
 
-  printf("Ingrese nombre:");
-  scanf("%s%s", nombre, apellido);
-  strcat(nuevaLinea, nombre);
-  strcat(nuevaLinea, " ");
-  strcat(nuevaLinea, apellido);
-  strcat(nuevaLinea, ",");
-
-
-  printf("Ingrese disponibilidad:\n");
-  respuesta = comprobarSINO("Lunes: ");
-  strcat(nuevaLinea, respuesta);
-  strcat(nuevaLinea, ",");
-
-  respuesta = comprobarSINO("Martes: ");
-  strcat(nuevaLinea, respuesta);
-  strcat(nuevaLinea, ",");
-
-  respuesta = comprobarSINO("Miercoles: "); 
-  strcat(nuevaLinea, respuesta);
-  strcat(nuevaLinea, ",");
-
-  respuesta = comprobarSINO("Jueves: ");
-  strcat(nuevaLinea, respuesta);
-  strcat(nuevaLinea, ",");
-
-  respuesta = comprobarSINO("Viernes: ");
-  strcat(nuevaLinea, respuesta);
-  strcat(nuevaLinea, ",");
-
-  respuesta = comprobarSINO("Sabado: ");
-  strcat(nuevaLinea, respuesta);
-  strcat(nuevaLinea, ",");
-
-  respuesta = comprobarSINO("Domingo: ");
-  strcat(nuevaLinea, respuesta);
-  strcat(nuevaLinea, ",");
-
-  pushBack(bomberos, crearBombero(nuevaLinea, dias));
-}
+4)Felipe Godoy 
+  Aspectos a mejorar:
+1.- Aportar mas.
+2.- Mejorar mi disponibilidad a la hora de trabajar.
+  Aspectos positivos:
+1.- Hacerle consultas a los ayudantes.
+2.- Aclarar consultas de mis compañeros.
