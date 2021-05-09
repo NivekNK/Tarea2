@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+//se hace el archivo
 FILE* importarArchivo()
 {
     char* filename = (char*)malloc(sizeof(char) * 30);
@@ -16,9 +16,11 @@ FILE* importarArchivo()
     return file;
 }
 
-void ExportarAArchivo()
+void ExportarArchivo(char* linea)
 {
-    FILE* exportFile = fopen("newPokemons", "w+");
+  FILE* exportFile = fopen("pokemons.csv", "w+");
+  fprintf(exportFile, "%s\n", linea);
+  fclose(exportFile);
 }
 
 //Funcion para leer el k-esimo elemento de un string (separado por comas)

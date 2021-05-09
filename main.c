@@ -21,10 +21,11 @@ int main()
   int solicitud = 100;
   while ( solicitud != 0 )
   {
+    //Solicitud de que elijan una opcion
     printf("Selecione una opcion\n");
     printOpciones();
     scanf("%d", &solicitud);
-      
+    //While para comprobar que la opcion que eliges este entre las opcines
     while(solicitud < 0 || solicitud > 10 ) 
     {
       printf("Selecione una opcion correcta\n");
@@ -32,7 +33,7 @@ int main()
       scanf("%d", &solicitud);
     }
 
-    //operaciones
+    //Se solicita el nombre del archivo, lo almacenamos en newFile,luego comenzamos a rellenar el almacenamiento de este
     if (solicitud == 1)
     {
       FILE* newFile = subir_archivo();
@@ -43,12 +44,13 @@ int main()
     else opciones(solicitud, pokedex, almac, imported);
 
   }
-  printf("Su archivo ha sido exportado correctamente");  return 0;
+ 
+  return 0;
 }
-
+//Estas son las opciones que mostramos con anterioridad.
 void printOpciones ()
 {
-  printf("1-. Subir otro archivo\n");
+  printf("1-. Subir un archivo\n");
   printf("2-. Atrapar Pokemon\n");
   printf("3-. Evolucionar pokemon\n");
   printf("4-. Buscar pokemons por tipo\n");
@@ -60,7 +62,7 @@ void printOpciones ()
   printf("10-. Mostrar mis pokemons por region\n");
   printf("0-. Salir\n");
 }
-
+//Cada opcion cumple con su funcion,llamando a la funcion necesaria.
 void opciones(int solicitud, Pokedex* pokedex, Almacenamiento* almac, bool imported)
 {
   switch (solicitud)

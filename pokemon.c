@@ -1,8 +1,4 @@
-/*
-COSA POR ARREGLAR 
 
-numero pokedex repetido
-*/
 #include "Map.h"
 #include "list.h"
 #include "manageFiles.h"
@@ -11,19 +7,11 @@ numero pokedex repetido
 #include <string.h>
 #define QUOTE "\""
 
-/* 
-listas
-lista pcs
-lista nombres
-lista tipos
-lista region
-*/
-
 typedef struct Pokemon Pokemon;
 typedef struct PokedexData PokedexData;
 typedef struct Almacenamiento Almacenamiento;
 typedef struct Pokedex Pokedex;
-
+//struct que almacena los pokemones y sus catct
 struct Pokemon
 {
     int id;
@@ -33,7 +21,7 @@ struct Pokemon
     char* sexo;
     PokedexData* pokedex;
 };
-
+//lo mismo que el anterior pero con con evoluciones porque es la pokedex
 struct PokedexData
 {
     char* nombre;
@@ -44,7 +32,7 @@ struct PokedexData
     int numeroPokedex;
     char* region;
 };
-
+//mapas que guradan los pokemones caracteristicas
 struct Almacenamiento
 {
     Map* ids;
@@ -59,7 +47,7 @@ struct Pokedex
   Map* nombre;
   Map* numeroEnPokedex;
 };
-
+//se crea la pokedex alocando memoria 
 PokedexData* crearPokedexDataVacio()
 {
     PokedexData* pokedex = (PokedexData*)malloc(sizeof(PokedexData));
@@ -74,7 +62,7 @@ PokedexData* crearPokedexDataVacio()
 
     return pokedex;
 }
-
+//esta funciom recive los datos y los pasa a la pokedex
 void crearPokemonEnPokedex(PokedexData* pokedex, char* aux, int i)
 {
     if (i == 1) pokedex->nombre = aux;
@@ -94,7 +82,7 @@ Pokemon* crearPokemon(char* linea, Pokedex* pokedex, Almacenamiento* almac)
   pokemon->pc = 0;
   pokemon->ps = 0;
   pokemon-> sexo = (char*)malloc(sizeof(char) * 10);
-
+//va creando la pokedex enviandose con un for, los datos se ingresan en la funcion de arriba
   for (int i = 0; i < 10; i++)
   {
     char* value = (char*)malloc(sizeof(char));
@@ -125,7 +113,7 @@ Pokemon* crearPokemon(char* linea, Pokedex* pokedex, Almacenamiento* almac)
   return pokemon;
 }
 
-
+//crea almacenamiento en mapas
 Almacenamiento* crearAlmacenameintoVacio()
 {
   Almacenamiento* almac = (Almacenamiento*)malloc(sizeof(Almacenamiento));
@@ -143,7 +131,7 @@ Almacenamiento* crearAlmacenameintoVacio()
 
   return almac;
 }
-
+//se crea la pokedex con mapa
 Pokedex* crearPokedexVacio()
 {
   Pokedex* pokedex = (Pokedex*)malloc(sizeof(Pokedex));
@@ -154,7 +142,7 @@ Pokedex* crearPokedexVacio()
 
   return pokedex;
 }
-
+//se ve que no se inserte el mismo pokemon
 void insertNoCopy(Pokedex* pokedex, Pokemon* pokemon)
 {
   if (searchMap(pokedex->nombre, pokemon->nombre) != NULL)
@@ -169,7 +157,7 @@ void insertNoCopy(Pokedex* pokedex, Pokemon* pokemon)
   }
   insertMap(pokedex->numeroEnPokedex, &pokemon->pokedex->numeroPokedex, pokemon->pokedex);
 }
-
+//se ponen listas en los mapas 
 void insertListToMap(Map* map, void* key, void* value)
 {
   List* list = (List*)searchMap(map, key);
@@ -185,7 +173,7 @@ void insertListToMap(Map* map, void* key, void* value)
   pushBack(list, value);
   insertMap(map, key, list);
 }
-
+//se ponen los mapas de tipo  
 void insertarTiposAMapa(Map* tiposMap, char* tipos, void* value)
 {
   char* aux = (char*)malloc(sizeof(char) * 20);
@@ -201,11 +189,11 @@ void insertarTiposAMapa(Map* tiposMap, char* tipos, void* value)
     if (key != NULL) remove_spaces(key);
   }
 }
-
+//funcion  que inserta en el almacenamiento
 void insertarAMapas(Pokedex* pokedex, Almacenamiento* almac, char* linea)
 {
   Pokemon* pokemon = crearPokemon(linea, pokedex, almac);
-
+  //se asegura de que no halla mas de 100 pokemones
   int size = sizeMapa(almac->ids);
   if (size + 1 > 100)
   {
@@ -237,7 +225,7 @@ void insertarAMapas(Pokedex* pokedex, Almacenamiento* almac, char* linea)
     insertarTiposAMapa(almac->tipos, pokemon->pokedex->tipos, pokemon);
   }
 }
-
+//se lee la linea y se llena el almacenamiento
 void llenarAlmacenamientos(FILE* pokemonsFile, Pokedex* pokedex, Almacenamiento* almac)
 {
   char linea[1024];
@@ -254,7 +242,7 @@ void llenarAlmacenamientos(FILE* pokemonsFile, Pokedex* pokedex, Almacenamiento*
     cont++;
   }
 }
-
+//se borra un pokemon de la lista de estos
 void borrarDeLista(Map* map, void* key, int id)
 {
   List* pokeList = (List*)searchMap(map, key);
@@ -273,7 +261,7 @@ void borrarDeLista(Map* map, void* key, int id)
   eraseMap(map, key);
   insertMap(map, key, pokeList);
 }
-
+// se saca el tipo del mapa con el aux 
 void eliminarTiposDeMapa(Map* tiposMap, char* tipos, int id)
 {
   char* aux = (char*)malloc(sizeof(char) * 20);
@@ -297,7 +285,7 @@ lista pcs
 lista tipos
 lista region
 */
-
+//funciones que muestran los menus
 void mostrarMenuAlmac()
 {
   printf("ID,");
@@ -368,7 +356,7 @@ void liberarPokemon(int id, Pokedex* pokedex, Almacenamiento* almac)
     }
   }
 }
-
+//se hace lee una linea del imput para liberar el pokemon
 void scanLiberarPokemon(Pokedex* pokedex, Almacenamiento *almac)
 {
   int id;
@@ -390,7 +378,7 @@ void scanLiberarPokemon(Pokedex* pokedex, Almacenamiento *almac)
     printf("El id ingresado no existe!\n");
   }
 }
-
+//da las instrucciones
 void retornaPrint(int i)
 {
   if ( i == 0 ) printf("Ingrese nombre del pokemon atrapado: ");
@@ -412,7 +400,7 @@ void mostrarTipos()
   printf("Tierra,Dragon,Bicho\n");
 }
 
-char* comrpobarTipo() //faltan comprobaciones xdd
+char* comrpobarTipo() 
 {
  char* res = (char*)malloc(sizeof(char) * 20);
  scanf("%s", res);
@@ -426,7 +414,7 @@ char* comrpobarTipo() //faltan comprobaciones xdd
  }
  return res;
 }
-
+//comprobacion del sexo cuando se ingresa
 char* comprobarSexo()
 {
   char* res = (char*)malloc(sizeof(char) * 20);
@@ -440,14 +428,7 @@ char* comprobarSexo()
   return res;
 }
 
-/* 
-listas
-lista pcs
-lista nombres
-lista tipos
-lista region
-*/
-
+//se lee el tipo 
 char* retornaRespuesta(int i)
 {
   char* res = (char*)malloc(sizeof(char) * 20);
@@ -538,7 +519,7 @@ char* retornaRespuestaConPokemon(Pokemon* pokemon, PokedexData* data, int i)
 
   return res;
 }
-
+//linea que contiene los datos de un pokemon
 char* crearLinea(Almacenamiento* almac, Pokemon* pokemon, PokedexData* data)
 {
   char* nuevaLinea = (char*)malloc(sizeof(char) * 80);
@@ -573,11 +554,10 @@ char* crearLinea(Almacenamiento* almac, Pokemon* pokemon, PokedexData* data)
 
   return nuevaLinea;
 }
-
+//se inserta en el mapa un pokemon
 void pokemonAtrapado(Pokedex* pokedex, Almacenamiento* almac)
 {
   char* nuevaLinea = crearLinea(almac, NULL, NULL);
-  //printf("%s\n", nuevaLinea);
   insertarAMapas(pokedex,almac,nuevaLinea);
 }
 
@@ -613,7 +593,7 @@ void mostrarPokemons(Pokedex* pokedex) // de la pokedex
     aux = nextMap(pokedexMap);
   }
 }
-
+//se busca por nombre y si no esta se envia mensaje y lee de nuevo
 void buscarNombreEnPokedex(Pokedex* pokedex)
 {
   Map* pokedexMap = pokedex->nombre;
@@ -636,7 +616,7 @@ void buscarNombreEnPokedex(Pokedex* pokedex)
   mostrarMenuPokedex();
   printf("%s, %i, %s, %s, %s, %i, %s\n", aux->nombre, aux->existencia, aux->tipos, aux->prev, aux->pos, aux->numeroPokedex, aux->region);
 }
-
+//se busca el nombre y si no se encuentra da un mensaje
 void buscarNombreEnAlmacenamiento(Almacenamiento* almac)
 {
   char* poke = (char*)malloc(sizeof(char));
@@ -663,7 +643,7 @@ void buscarNombreEnAlmacenamiento(Almacenamiento* almac)
     aux = (Pokemon*)nextList(list);
   }
 }
-
+//se muestran por pc
 void mostrarxPC(Almacenamiento* almac)
 {
   List* listPc = (List*) firstMap(almac->pcs);
@@ -686,7 +666,7 @@ void mostrarxPC(Almacenamiento* almac)
   printf("\n");
   printf("----------------------------------------------\n");
 }
-
+//se muestran todos los pokemones de la region
 void mostrarRegion(Almacenamiento* almac)
 {
   char* region = (char*) malloc(sizeof(char));
@@ -715,7 +695,7 @@ void mostrarRegion(Almacenamiento* almac)
   else printf("La region ingresada no existe\n");
   printf("---------------------------------------------------------------------\n");
 }
-
+//se busca por tipo  y retorna
 void buscarPorTipo(Almacenamiento* almac)
 {
   char* tipo = (char*)malloc(sizeof(char));

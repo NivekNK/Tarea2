@@ -2,7 +2,7 @@
 
 FILE* importarArchivo();
 
-void ExportarAArchivo();
+void ExportarArchivo(char* linea);
 
 const char* get_csv_field (char* tmp, int k);
 
